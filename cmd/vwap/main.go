@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"strings"
 
@@ -15,9 +16,10 @@ func main() {
 	// handling SIGTERM signal to close the program gracefully
 	sigterm.HnderSigterm()
 
-	tradingPairsInput := flag.String("pairs", "BTC-USD,ETH-USD,ETH-BTC", "trading pairs to monitor")
-	windowSize := flag.Int("window", 200, "window size")
+	tradingPairsInput := flag.String("pairs", "BTC-USD,ETH-USD,ETH-BTC", "trading pairs to monitor (comma separated)")
+	windowSizeInput := flag.Int("window", 200, "window size")
 
+	fmt.Println(*tradingPairsInput, *windowSizeInput)
 	flag.Parse()
 
 	if !utils.IsValidTradingPairs(*tradingPairsInput) {
@@ -28,7 +30,7 @@ func main() {
 	// create an aggregator for each pair and a channel to send incoming sizedPrices to it
 	pairs := make(map[string]chan *types.ChannelMessage)
 	for _, name := range pairNames {
-		aggregator := coinbase.NewPairAggregator(name, *windowSize)
+		aggregator := coinbase.NewPairAggregator(name, *windowSizeInput)
 		incomingMatches := make(chan *types.ChannelMessage)
 		go aggregator.ListenToMatches(incomingMatches)
 		pairs[name] = incomingMatches
