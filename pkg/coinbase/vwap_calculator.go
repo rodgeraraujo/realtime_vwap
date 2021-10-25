@@ -72,7 +72,7 @@ func (pairAggregator *PairAggregator) removeOldestMatch() {
 // log logs the VWAP for a pair
 func (pairAggregator *PairAggregator) log() {
 	vwap := pairAggregator.calcVwap()
-	log.Printf("%s: %f", pairAggregator.PairName, vwap)
+	log.Printf("%s: (%f - %f - %f) %f", pairAggregator.PairName, pairAggregator.TotalSize, pairAggregator.TotalVWAP, pairAggregator.SizedPrices[0], vwap)
 }
 
 // updateMatch updates the aggregator with a new match
