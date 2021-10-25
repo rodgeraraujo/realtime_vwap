@@ -17,3 +17,7 @@ test-cov-clean:
 .PHONY: install
 install:
 	./scripts/install.sh
+
+.PHONY: build
+build:
+	./scripts/build.sh
