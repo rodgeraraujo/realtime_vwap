@@ -7,6 +7,7 @@ import (
 
 	"github.com/rodgeraraujo/vwap/pkg/coinbase"
 	"github.com/rodgeraraujo/vwap/pkg/sigterm"
+	"github.com/rodgeraraujo/vwap/pkg/types"
 	"github.com/rodgeraraujo/vwap/pkg/utils"
 )
 
@@ -25,16 +26,16 @@ func main() {
 	pairNames := strings.Split(*tradingPairsInput, ",")
 
 	// create an aggregator for each pair and a channel to send incoming sizedPrices to it
-	pairs := make(map[string]chan *coinbase.ChannelMessage)
+	pairs := make(map[string]chan *types.ChannelMessage)
 	for _, name := range pairNames {
 		aggregator := coinbase.NewPairAggregator(name, *windowSize)
-		incomingMatches := make(chan *coinbase.ChannelMessage)
+		incomingMatches := make(chan *types.ChannelMessage)
 		go aggregator.ListenToMatches(incomingMatches)
 		pairs[name] = incomingMatches
 	}
 
 	// subscribe to "matches" for the list of trading pairs
-	incomingMessages := make(chan *coinbase.ChannelMessage)
+	incomingMessages := make(chan *types.ChannelMessage)
 	coinbase.WebsocketSubscribe(incomingMessages, pairNames)
 
 	for msg := range incomingMessages {

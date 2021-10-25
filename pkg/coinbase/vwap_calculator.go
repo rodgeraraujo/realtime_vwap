@@ -3,6 +3,8 @@ package coinbase
 import (
 	"log"
 	"strconv"
+
+	"github.com/rodgeraraujo/vwap/pkg/types"
 )
 
 // Match a minimal type for the match returned by the websocket
@@ -26,7 +28,7 @@ type PairAggregator struct {
 	WindowSize           int
 }
 
-func toSizedPrice(match *ChannelMessage) (*SizedPrice, error) {
+func toSizedPrice(match *types.ChannelMessage) (*SizedPrice, error) {
 	size, err := strconv.ParseFloat(match.Size, 64)
 	if err != nil {
 		return nil, err
@@ -72,11 +74,11 @@ func (pairAggregator *PairAggregator) removeOldestMatch() {
 // log logs the VWAP for a pair
 func (pairAggregator *PairAggregator) log() {
 	vwap := pairAggregator.calcVwap()
-	log.Printf("%s: (%f - %f - %f) %f", pairAggregator.PairName, pairAggregator.TotalSize, pairAggregator.TotalVWAP, pairAggregator.SizedPrices[0], vwap)
+	log.Printf("%s: %f", pairAggregator.PairName, vwap)
 }
 
 // updateMatch updates the aggregator with a new match
-func (pairAggregator *PairAggregator) updateMatch(match *ChannelMessage) {
+func (pairAggregator *PairAggregator) updateMatch(match *types.ChannelMessage) {
 	if len(pairAggregator.SizedPrices) == pairAggregator.WindowSize {
 		pairAggregator.removeOldestMatch()
 	}
@@ -91,7 +93,7 @@ func (pairAggregator *PairAggregator) updateMatch(match *ChannelMessage) {
 }
 
 // listenToMatches listens to matches and updates the aggregator
-func (pairAggregator *PairAggregator) ListenToMatches(match chan *ChannelMessage) {
+func (pairAggregator *PairAggregator) ListenToMatches(match chan *types.ChannelMessage) {
 	for match := range match {
 		pairAggregator.updateMatch(match)
 		pairAggregator.log()

@@ -5,6 +5,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/rodgeraraujo/vwap/pkg/types"
 )
 
 func TestCoinbase(t *testing.T) {
@@ -44,7 +45,7 @@ var _ = Describe("coinbase", func() {
 		})
 
 		It("should return a new sized price", func() {
-			match := &ChannelMessage{
+			match := &types.ChannelMessage{
 				ProductId: "BTC-USD",
 				Price:     "100.0",
 				Size:      "1.0",
