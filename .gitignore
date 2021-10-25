@@ -1,0 +1,14 @@
+config.yaml
+
+/bin
+/tmp/*
+/local
+
+*.test
+*.cov
+*.coverprofile
+*.html
+.vscode
+.idea
+.DS_Store
+*~
